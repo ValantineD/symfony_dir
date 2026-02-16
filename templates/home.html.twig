@@ -9,13 +9,15 @@
 
 
 
-<div class="row">
+    <section>
 
-    {% for product in products %}
-        <div class="col-sm-3">
-        {{ include('partials/_card.html.twig', {'product': product}) }}
+        <h2>Les derniers produits:</h2>
+
+        <div class="d-flex flex-wrap gap-5">
+            {% for product in products %}
+                {{ include('partials/_card.html.twig', {'product': product}) }}
+            {% endfor %}
         </div>
-    {% endfor %}
-</div>
+    </section>
 
-{% endblock%}
+{% endblock %}

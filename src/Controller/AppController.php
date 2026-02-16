@@ -21,8 +21,14 @@ class AppController extends AbstractController
     #[Route('/product/{id}', name: 'app_public_product_show', methods: ['GET'])]
     public function product_show(Product $product): Response
     {
-        return $this->render('product_show.html.twig', [
+        return $this->render('product/show.html.twig', [
             'product' => $product
         ]);
+    }
+
+    #[Route('/admin/dashboard', name: 'app_admin_dashboard', methods: ['GET'])]
+    public function admin(): Response
+    {
+    return $this->render('admin/dashboard.html.twig');
     }
 }
