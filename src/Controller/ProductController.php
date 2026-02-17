@@ -98,7 +98,7 @@ final class ProductController extends AbstractController
             if ($pictureFile) {
                 // remove old image
                 if ($product->getPictureFilename()) {
-                    $oldImagePath = $this->getParameter('kernel.project_dir') . '/public/uploads/products/' . $product->getPictureFilename();
+                    $oldImagePath = $this->getParameter('kernel.project_dir') . '/public/uploads/pictures/' . $product->getPictureFilename();
                     if (file_exists($oldImagePath)) {
                         unlink($oldImagePath);
                     }
@@ -130,6 +130,13 @@ final class ProductController extends AbstractController
     public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $product->getId(), $request->getPayload()->getString('_token'))) {
+            if ($product->getPictureFilename()) {
+                $oldImagePath = $this->getParameter('kernel.project_dir') . '/public/uploads/pictures/' . $product->getPictureFilename();
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+
             $entityManager->remove($product);
             $entityManager->flush();
         }

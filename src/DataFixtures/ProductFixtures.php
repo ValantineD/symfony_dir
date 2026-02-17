@@ -18,29 +18,37 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
         $faker = Faker\Factory::create('fr_FR');
         $faker->addProvider(new FakerPicsumImagesProvider($faker));
 
-            for ($i = 0; $i <= 10; $i++) {
-                $product = new Product();
+        $desDir = dirname(__DIR__) . '/../public/uploads/pictures/';
 
-                $filePath = $faker->image(dir: '/tmp', width: 640, height: 480);
+        if (!is_dir($desDir)) {
+            mkdir($desDir, 0775, true);
+        } else {
+            exec("rm -rf " . $desDir);
+            mkdir($desDir, 0775, true);
+        }
+
+
+        for ($i = 0; $i <= 10; $i++) {
+            $product = new Product();
+
+            $filePath = $faker->image(dir: '/tmp');
+
+            if ($filePath) {
                 $ext = pathinfo($filePath, PATHINFO_EXTENSION);
-                $filename = $faker->uuid() . '.' . $ext;
-
-                $desDir = dirname(__DIR__) . '/../public/uploads/pictures/';
-
-                if (!is_dir($desDir)) mkdir($desDir, 0775, true);
+                $filename = uniqid('products_', true) . '.' . $ext;
 
                 copy($filePath, $desDir . '/' . $filename);
-
                 $product->setPictureFilename($filename);
-
-
-                $product->setTitle($faker->words(3, true))
-                    ->setPrice($faker->numberBetween($min = 20, $max = 300))
-                    ->setDescription($faker->realText($maxNbChars = 200, $indexSize = 2))
-                    ->setCategory($this->getReference('category-' . rand(0, 5), Category::class));
-
-                $manager->persist($product);
             }
+
+
+            $product->setTitle($faker->words(3, true))
+                ->setPrice($faker->numberBetween($min = 20, $max = 300))
+                ->setDescription($faker->realText($maxNbChars = 200, $indexSize = 2))
+                ->setCategory($this->getReference('category-' . rand(0, 5), Category::class));
+
+            $manager->persist($product);
+        }
 
         $manager->flush();
     }
