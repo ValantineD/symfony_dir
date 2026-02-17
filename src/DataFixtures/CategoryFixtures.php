@@ -11,12 +11,15 @@ class CategoryFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        for ($i = 0; $i < 10; $i++) {
+        $categories = ['T-shirts', 'Patalons', 'Chaussures', 'Chaussettes', 'Sous-vêtements', 'Accessoires'];
+        foreach ($categories as $key => $value) {
             $category = new Category();
 
-            $category->setTitle('Category ' . $i);
+            $category->setTitle($value);
 
             $manager->persist($category);
+
+            $this->addReference('category-' . $key, $category);
         }
 
          $manager->flush();
