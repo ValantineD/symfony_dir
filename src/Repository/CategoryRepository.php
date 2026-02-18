@@ -16,6 +16,28 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
+    public function findPaginate(?int $size = 10, ?int $page = 1): array
+    {
+        $offset = ($page - 1) * $size;
+
+        $count = $this->createQueryBuilder('c')
+            ->select('COUNT(c)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $categories = $this->createQueryBuilder('c')
+            ->orderBy('c.createdAt', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults($size)
+            ->getQuery()
+            ->getResult();
+
+        return [
+            'categories' => $categories,
+            'count' => $count,
+        ];
+    }
+
     //    /**
     //     * @return Category[] Returns an array of Category objects
     //     */

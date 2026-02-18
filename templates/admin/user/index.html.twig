@@ -1,11 +1,13 @@
 {% extends 'admin/base-admin.html.twig' %}
 
 {% block title %}
-    {{ title }}
+    User Index
 {% endblock %}
 
 {% block body %}
-    <h1> {{ title }}</h1>
+    <h1>User Index</h1>
+
+    {{ include('partials/_pagination.html.twig') }}
 
     <a class="btn btn-primary" href="user/new">New User</a>
 
