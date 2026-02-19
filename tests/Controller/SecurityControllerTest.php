@@ -34,4 +34,14 @@ class SecurityControllerTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
+    public function testVisitorAuthorized(): void
+    {
+        $client = self::createClient();
+        $user = new InMemoryUser('admin', 'password', ['ROLE_ADMIN']);
+        $client->loginUser($user);
+
+        $client->request('GET', '/admin/dashboard');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+    }
 }
