@@ -2,16 +2,16 @@
 
 namespace App\Tests\Controller;
 
-use App\Repository\ProductRepository;
+use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\InMemoryUser;
 
-class ProductControllerTest extends WebTestCase
+class CategoryControllerTest extends WebTestCase
 {
     private static ?int $id = null;
 
-    public function testProductController(): void
+    public function testNewCategory(): void
     {
 
         $client = static::createClient();
@@ -19,39 +19,35 @@ class ProductControllerTest extends WebTestCase
         $user = new InMemoryUser('admin', 'password', ['ROLE_ADMIN']);
         $client->loginUser($user);
 
-        $crawler = $client->request('GET', '/admin/product/new');
+        $crawler = $client->request('GET', '/admin/category/new');
 
         $buttonCrawlerNode = $crawler->selectButton('Save');
         $form = $buttonCrawlerNode->form();
 
-        $form['product[category]']->select('Patalons');
 
         $client->submit($form, [
-            'product[title]' => 'JPP',
-            'product[description]' => 'Symfony rocks!',
-            'product[price]' => 999,
+            'category[title]' => 'PutaindelaCaroline',
         ]);
 
         $client->submit($form);
 
         $container = self::getContainer();
-        $product = $container->get(ProductRepository::class)->findOneBy(['title' => 'JPP']);
-        self::$id = $product->getId();
+        $category = $container->get(CategoryRepository::class)->findOneBy(['title' => 'PutaindelaCaroline']);
+        self::$id = $category->getId();
 
-        $this->assertResponseRedirects('/admin/product');
+        $this->assertResponseRedirects('/admin/category');
     }
-
     public function testIndex(): void
     {
         $client = self::createClient();
         $user = new InMemoryUser('admin', 'password', ['ROLE_ADMIN']);
         $client->loginUser($user);
 
-        $client->request('GET', '/admin/product');
+        $client->request('GET', '/admin/category');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
-    public function testEditProduct(): void
+    public function testEditCategory(): void
     {
 
         $client = static::createClient();
@@ -59,33 +55,29 @@ class ProductControllerTest extends WebTestCase
         $user = new InMemoryUser('admin', 'password', ['ROLE_ADMIN']);
         $client->loginUser($user);
 
-        $crawler = $client->request('GET', '/admin/product/' . self::$id . '/edit');
+        $crawler = $client->request('GET', '/admin/category/' . self::$id . '/edit');
 
         $buttonCrawlerNode = $crawler->selectButton('Update');
         $form = $buttonCrawlerNode->form();
 
-        $form['product[category]']->select('Chaussettes');
-
         $client->submit($form, [
-            'product[title]' => 'Aled',
-            'product[description]' => 'Siouplait',
-            'product[price]' => 666,
+            'category[title]' => 'PutaindAdele'
         ]);
 
         $client->submit($form);
 
 
-        $this->assertResponseRedirects('/admin/product');
+        $this->assertResponseRedirects('/admin/category');
     }
 
-    public function testShowProduct(): void
+    public function testShowCategory(): void
     {
         $client = self::createClient();
 
         $user = new InMemoryUser('admin', 'password', ['ROLE_ADMIN']);
         $client->loginUser($user);
 
-        $client->request('GET', '/admin/product/' . self::$id);
+        $client->request('GET', '/admin/category/' . self::$id);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
